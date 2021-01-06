@@ -1,1 +1,385 @@
-tete
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>模拟短信发送</title>
+    <style>
+        /* 整体样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            background-color: #f1f3f6;
+            font-family: "PingFang SC"
+        }
+
+        /* 聊天框背景 */
+        #container {
+            width: 650px;
+            height: 600px;
+            background: #f1f3f6;
+            margin: 80px auto 0;
+            position: relative;
+            /* box-shadow: 0px 0px 10px rgb(231, 231, 233); */
+            border-radius: 20px;
+            box-shadow: 0 4px 23px 0 rgba(0, 0, 0, .09);
+            /* border-radius: 5px; */
+        }
+
+        /* 聊天框顶部信息 */
+        .header {
+            background: #f1f3f6;
+            height: 34px;
+            color: rgb(73, 73, 73);
+            line-height: 34px;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .header span {
+            background: #f1f3f6;
+        }
+
+        .footer {
+            width: 610px;
+            height: 50px;
+            background: #f1f3f6;
+            position: absolute;
+            bottom: 0;
+            padding: 20px;
+            border-radius: 20px;
+
+        }
+
+        /* 底部输入框的长度 */
+        .footer input {
+            width: 560px;
+            height: 38px;
+            color: #989b9e;
+            outline: none;
+            font-size: 14px;
+            text-indent: 10px;
+            padding: 5px 0 5px 14px;
+            border: 0;
+            position: absolute;
+            /* border-radius: 6px; */
+            right: 20px;
+            background: #f1f3f6;
+            box-shadow:
+                inset 2px 2px 5px #BABECC, inset -5px -5px 10px #FFF;
+            border-radius: 30px;
+        }
+
+        .footer input:focus {
+            box-shadow:
+                inset 1px 1px 2px #BABECC, inset -1px -1px 2px #FFF;
+        }
+
+        /* 发送按钮 */
+        .footer span {
+            display: inline-block;
+            margin: 0px 0 5px 0;
+            width: 72px;
+            height: 48px;
+            color: #60bec2;
+            /* background: #f1f3f6; */
+            box-shadow:
+                inset 0 0 15px rgba(55, 84, 170, 0),
+                inset 0 0 20px rgba(255, 255, 255, 0),
+                10px 10px 18px rgba(55, 84, 170, 0.15),
+                -10px -10px 22px white,
+                inset 0px 0px 4px rgba(255, 255, 255, 0.2);
+            /* font-weight: 900; */
+            font-size: 14px;
+            line-height: 48px;
+            cursor: pointer;
+            text-align: center;
+            position: absolute;
+            right: 20px;
+            border-radius: 0px 30px 30px 0px;
+
+
+        }
+
+        /* 发送按钮悬浮时的颜色 */
+        .footer span:hover {
+            /* color: rgb(107, 107, 107);
+            background: rgb(255, 255, 255); */
+            transition: box-shadow 0.3s;
+            /* box-shadow: 0 10px 20px 0 rgba(168, 182, 191, .6) !important; */
+            /* box-shadow: inset 1px 1px 3px rgba(55, 84, 170, 0.15), inset -2px -2px 5px white, 0px 0px 2px rgba(255, 255, 255, 0.2) */
+            box-shadow: inset 7px 7px 15px rgba(55, 84, 170, 0.15), inset -7px -7px 20px white, 0px 0px 4px rgba(255, 255, 255, 0.2);
+        }
+
+        .footer span:active {
+            box-shadow: inset 7px 7px 15px rgba(55, 84, 170, 0.15), inset -7px -7px 20px white, 0px 0px 4px rgba(255, 255, 255, 0.2);
+        }
+
+        /* 聊天框底部icon的样式 */
+        #icon {
+            display: inline-block;
+            background: rgb(255, 255, 255);
+            width: 45px;
+            height: 45px;
+            border-radius: 30px;
+            position: absolute;
+            bottom: 20px;
+            left: 14px;
+            cursor: pointer;
+            overflow: hidden;
+
+        }
+
+        /* 所有图片的尺寸 */
+        img {
+            width: 45px;
+            height: 45px;
+        }
+
+        /* 聊天可展示的显示区域 */
+        .content {
+            font-size: 14px;
+            width: 650px;
+            height: 440px;
+            overflow: auto;
+            /* padding: 5px; */
+            background-color: #f1f3f6;
+        }
+
+        .content li {
+            margin-top: 20px;
+            padding: 0 10px 0 10px;
+            width: 630px;
+            display: block;
+            clear: both;
+            overflow: hidden;
+            background-color: #f1f3f6;
+        }
+
+        .content li img {
+            float: left;
+        }
+
+        /* 聊天气泡 */
+        .content li span {
+            background: #60bec2;
+            padding: 10px;
+            margin: 0 10px 0 10px;
+            border-radius: 10px;
+            /* margin: 6px 10px 6 10px; */
+            max-width: 490px;
+            word-break: normal;
+            display: block;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+        .content li span img.spanimg {
+            width: 100px;
+            height: 100px;
+        }
+
+        .content li span img.spanimg:hover {
+            width: 400px;
+            height: 400px;
+            /* cursor: crosshair; */
+            /*放大倍数*/
+            /* transform: scale(4); */
+        }
+
+        .content li img.imgleft {
+            float: left;
+            width: 400px;
+        }
+
+        .content li img.imgright {
+            float: right;
+            width: 400px;
+        }
+
+        /* 左侧聊天框 */
+        .content li span.spanleft {
+            float: left;
+            color: #212121;
+            background: #ffffff;
+        }
+
+        /* 右侧聊天头像 */
+        .content li span.spanright {
+            float: right;
+            background: #60bec2;
+            color: #fff;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="container">
+        <div class="header">
+            <span style="float: left;">私人助理</span>
+            <!-- <span style="float: right;">T 20:30</span> -->
+        </div>
+        <ul class="content">
+            <li>
+                <span class="spanleft">
+                    <img src="/Users/luomingyang/PycharmProjects/pythonProject_test/20201027-百度识别api/头像.jpg"
+                        class="spanimg" />
+                </span>
+            </li>
+
+        </ul>
+        <div class="footer">
+            <div id="icon">
+                <img src="/Users/luomingyang/Luo_MingYang/Utools/utools_hello_word/static/images/chatroom.png" alt="">
+            </div>
+            <input id="text" type="text" placeholder="说点什么吧...">
+            <span id="btn">send</span>
+        </div>
+    </div>
+</body>
+<script>
+    var save_file_arr = []
+    window.onload = function () {
+        var arrIcon = ['/Users/luomingyang/Luo_MingYang/Utools/utools_hello_word/static/images/chatroom.png', '/Users/luomingyang/Luo_MingYang/Utools/utools_hello_word/static/images/chatroom3.png'];
+        var num = 0; //控制聊天数量
+        var iNow = -1; //用来累加改变左右浮动
+        var btn = document.getElementById('btn');
+        var text = document.getElementById('text');
+        var content = document.getElementsByTagName('ul')[0];
+        var img = content.getElementsByTagName('img');
+        var span = content.getElementsByTagName('span');
+
+
+        //用于存储json数据
+        var res_json = {
+            id: 0,
+            text: 'text',
+            image: '',
+            time: Date(),
+            test: 'kdjhwflkhdsfjhakdhfkasdahfkahsdfkhasdlkfhkadsfhksdjhfkahdfkahdsfkhkhdsfjhakdhfkasdahfkahsdfkhasdlkfhkadsfhksdjhfkahdfkahdsfkhdsfjhakdhfkasdahfkahsdfkhasdlkfhkadsfhksdjhfkahdfkahdsf'
+        }
+
+        //发送的文本消息显示
+        function send(send = text.value) {
+            content.innerHTML += '<li><span class="spanright">' + send + '</span></li>';
+        }
+
+        function get_res(msg, json) {
+            if (msg == 'help') {
+                data = JSON.stringify(json);
+            } else if (json[msg]) {
+                data = json[msg]
+            } else { data = '未设置对应回复，点击添加' }
+            return data
+        }
+
+
+        function res(data) {
+
+            //文本类型的消息回复
+            function res_text(text) {
+                content.innerHTML += '<li><span class="spanleft">' + text + '</span></li>';
+                content.scrollTop = content.scrollHeight
+            }
+
+            // 图像类型消息回复
+            function res_img(img_path = '/Users/luomingyang/PycharmProjects/pythonProject_test/20201027-百度识别api/头像.jpg') {
+                content.innerHTML += '<li><span class="spanleft" ><img src="' + img_path + '" class = "spanimg" /></span></li>';
+                content.scrollTop = content.scrollHeight
+            }
+
+            if (data == 'img') {
+                res_img('/Users/luomingyang/PycharmProjects/pythonProject_test/20201027-百度识别api/头像.jpg')
+            } else {
+                res_text(data)
+            }
+
+        }
+
+        // 处理输入的信息
+        function dispose_msg(msg) {
+            send(msg)//发送的信息
+            save_file_arr[num] = msg
+            num++
+            data = get_res(msg, res_json)//从数据中获得获取回应的信息
+            save_file_arr[num] = data
+            res(data)//回复信息
+        }
+
+
+        //主函数 ：0.监听输入的内容 1.显示发送的信息 2.根据规则匹配回复的内容 3.回复内容
+        function main() {
+            //按键监听
+            window.onkeydown = function () {
+                if (13 == event.keyCode) {
+                    dispose_msg(text.value)
+                }
+            }
+
+            //鼠标监听
+            btn.onclick = function () {
+                dispose_msg(text.value)
+            }
+        }
+
+
+        main()
+
+
+
+
+
+
+
+    }
+
+    // 构造下载文件的函数
+    function download(filename, content) {
+        var blob = new Blob([content], { type: 'text/plain' }); //Bolb 斑点
+        var url = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+
+        a.style = "display: none";
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+
+        setTimeout(function () {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 5);
+    }
+
+
+    // 重新加载时调用方法
+    window.onbeforeunload = onbeforeunload_handler;
+
+    //退出窗口时调用的方法
+    // window.onunload = onunload_handler;
+
+    function onbeforeunload_handler() {
+
+        var warning = "确认退出?";
+        //保存数据到本地
+        var content = save_file_arr
+        download('chat.txt', content)
+        return warning;
+
+
+    }
+
+    function onunload_handler() {
+
+        var warning = "谢谢光临";
+
+        alert(warning);
+
+    }
+
+</script>
+
+</html>
